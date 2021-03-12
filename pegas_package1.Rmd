@@ -1,0 +1,105 @@
+---
+title: "Pegas"
+output: html_document
+---
+
+# Installing packages and loading libraries (These are big packages and might take 30sec - 1minute to load)
+```{r setup, include=FALSE}
+#install.packages("VariantAnnotation")
+#install.packages("pegas")
+library(VariantAnnotation)
+library(pegas)
+```
+
+
+#Bring in data file
+```{r setup, include=FALSE}
+#vcf_file <- ("C:/Users/shawn/Desktop/7613-A1.g.vcf.gz")
+#vcf_file <- read.csv("C:/Users/shawn/Desktop/7613-A10.csv")
+vcf_file <- ("C:/Users/shawn/Desktop/7613-A3.g.vcf.gz")
+
+```
+
+
+# Running VCFloci from pegas package, This converts our vcf file into a data frame (This also takes awhile to run...)
+```{r setup, include=FALSE}
+
+#Assigning data frame to a variable to enable viewing
+vcf_data_frame <- VCFloci(vcf_file, what = "all", chunk.size = 1e9, quiet = FALSE)
+## S3 method for class 'VCFinfo'
+#print(x)
+VCFheader(vcf_file)
+VCFlabels(vcf_file)
+## S3 method for class 'VCFinfo'
+is.snp(x)
+rangePOS(x, from, to)
+selectQUAL(x, threshold = 20)
+getINFO(x, what = "DP", as.is = FALSE)
+
+
+
+```
+
+
+#Find out how many SNPS are in the 1st chromosome
+```{r setup, include=FALSE}
+x <- sum(vcf_data_frame$CHROM == "Phyram_PR-15-019_s0001")
+x
+```
+
+
+
+
+#Convert the data frame to contain x number of rows and 2 columns
+```{r setup, include=FALSE}
+new_vcf_data_frame <- vcf_data_frame[1:2780335, ]
+View(new_vcf_data_frame)
+
+```
+
+#Set p to be the number of rows in the new data frame and create a new variable with the sample name
+```{r setup, include=FALSE}
+p <- 2780335
+#Replace every row with a 0
+SNP_7613_A3 <- rep(0, p)
+
+
+
+```
+
+
+# Add a 1 to every row with a position number
+
+```{r setup, include=FALSE}
+
+SNP_7613_A3[new_vcf_data_frame$POS] <- 1
+
+```
+
+
+#View the data
+```{r setup, include=FALSE}
+
+SNP_7613_A3
+
+
+
+```
+
+
+
+#Save the data frame onto your desktop
+```{r setup, include=FALSE}
+saveRDS(SNP_7613_A3,file="C:/Users/shawn/Desktop/7613-A3.Rda")
+```
+
+#You can reload the data frame back into R to make sure it worked and saved right
+```{r setup, include=FALSE}
+a <- readRDS("C:/Users/shawn/Desktop/7613-A3.Rda")
+```
+
+#Final sanity check 
+```{r setup, include=FALSE}
+a
+
+```
